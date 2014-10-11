@@ -11,4 +11,5 @@ import org.spring.rest.model.Person;
  */
 public interface HomeService {
 	public Person getPersonById(int id);
+	public int addPerson(Person person);
 }

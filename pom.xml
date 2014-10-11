@@ -14,6 +14,7 @@
 		<org.aspectj-version>1.6.10</org.aspectj-version>
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 		<hibernate.version>4.3.5.Final</hibernate.version>
+		<spring-hateoas.version>0.3.0.RELEASE</spring-hateoas.version>
 	</properties>
 	<dependencies>
 		<!-- Spring -->
@@ -55,6 +56,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.hateoas</groupId>
+			<artifactId>spring-hateoas</artifactId>
+			<version>${spring-hateoas.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

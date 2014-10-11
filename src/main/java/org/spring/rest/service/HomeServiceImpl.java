@@ -33,4 +33,12 @@ public class HomeServiceImpl implements HomeService {
 		return this.homeDAO.getPersonById(id);
 	}
 
+	@Override
+	public int addPerson(Person person) {
+		logger.debug(" -------- Adding Person ------- ");
+		logger.debug(" ====  Input Is =====   {}", person.toString() );
+		
+		return this.homeDAO.addPerson(person);
+	}
+
 }
