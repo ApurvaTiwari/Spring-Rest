@@ -1,11 +1,19 @@
 package org.spring.rest.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Entity bean with JPA annotations
@@ -15,7 +23,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="PERSON")
-public class Person {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonAutoDetect
+public class Person implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name="id")
@@ -26,6 +38,19 @@ public class Person {
 	
 	private String country;
 
+	
+	
+	public Person() {
+		super();
+}
+	/*@JsonCreator
+	public Person(int id, String name, String country) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.country = country;
+	}*/
+	@JsonProperty("ID")
 	public int getId() {
 		return id;
 	}
@@ -33,7 +58,7 @@ public class Person {
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	@JsonProperty("name")
 	public String getName() {
 		return name;
 	}
@@ -41,7 +66,8 @@ public class Person {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	@JsonProperty("country")
 	public String getCountry() {
 		return country;
 	}

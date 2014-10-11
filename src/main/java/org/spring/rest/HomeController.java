@@ -19,11 +19,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Handles requests for the application home page.
@@ -52,29 +54,11 @@ public class HomeController {
 	 * @throws JsonGenerationException 
 	 */
 	@RequestMapping(value = "/{personId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<String> getPersonDetails(@PathVariable int personId) throws JsonGenerationException, JsonMappingException, IOException {
+	public @ResponseBody ResponseEntity<Person> getPersonDetails(@PathVariable int personId) throws JsonGenerationException, JsonMappingException, IOException {
 		logger.info("--------------- Inside Get Person ------------ The person ID  is {}.", personId);
 
-		Person p = this.homeService.getPersonById(personId);
-
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		Map<String, Object> treeMap = new  TreeMap<String, Object>(String.CASE_INSENSITIVE_ORDER);
-		
-		treeMap.put("UserId",  personId);
-		treeMap.put("Name", p.getName());
-		treeMap.put("country", p.getCountry());
-		treeMap.put("timeOfQuerying", formattedDate);
-		
-		ObjectMapper jsonMapper = new ObjectMapper();	
-		
-		String strResponse = jsonMapper.writeValueAsString(treeMap);
-		
-		return new ResponseEntity<String>(strResponse, getHeaders(), HttpStatus.OK);
+		Person person = this.homeService.getPersonById(personId);	
+		return new ResponseEntity<Person>(person, getHeaders(), HttpStatus.OK);
 	}
 	
 	public  MultiValueMap<String, String> getHeaders(){
