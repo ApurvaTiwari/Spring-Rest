@@ -14,6 +14,8 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 /**
  * Entity bean with JPA annotations Hibernate provides JPA implementation
@@ -24,6 +26,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 @Entity
 @Table(name = "PERSON")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@JsonSerialize(include=Inclusion.NON_NULL)
 @JsonAutoDetect
 public class Person implements Serializable {
 
@@ -43,12 +46,12 @@ public class Person implements Serializable {
 	}
 
 	@JsonCreator
-	public Person(
-			@JsonProperty("name") String name,
-			@JsonProperty("country") String country) {
+	public Person(@JsonProperty("name") String name,
+			@JsonProperty("country") String country, @JsonProperty("id") int id) {
 		super();
 		this.name = name;
 		this.country = country;
+		this.id = id;
 	}
 
 	@JsonProperty("ID")

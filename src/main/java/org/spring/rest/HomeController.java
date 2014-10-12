@@ -5,7 +5,10 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javassist.NotFoundException;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,7 +60,7 @@ public class HomeController {
 	 * @throws JsonGenerationException 
 	 */
 	@RequestMapping(value = "/{personId}", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody ResponseEntity<Person> getPersonDetails(@PathVariable int personId) throws JsonGenerationException, JsonMappingException, IOException {
+	public @ResponseBody ResponseEntity<Person> getPersonDetails(@PathVariable int personId) throws org.spring.rest.exception.NotFoundException,JsonGenerationException, JsonMappingException, IOException {
 		logger.info("--------------- Inside Get Person ------------ The person ID  is {}.", personId);
 
 		Person person = this.homeService.getPersonById(personId);	
@@ -71,9 +75,35 @@ public class HomeController {
 		return new ResponseEntity<Void>(httpHeaders, HttpStatus.CREATED);
 	}
 	
+	@RequestMapping(value="", method = RequestMethod.PUT)
+	public ResponseEntity<Void> updatePerson(@RequestBody Person person){
+		logger.info(" >>>>>>>>> Update Person Start . Person is =  {} "+ person.toString());
+		int id = this.homeService.updatePerson(person);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setLocation(linkTo(HomeController.class).slash(id).toUri());
+		return new ResponseEntity<Void>(httpHeaders,HttpStatus.NO_CONTENT);
+}
+	
+	@RequestMapping(value="/{personId}",method = RequestMethod.DELETE)
+	public ResponseEntity<Void> deletePerson(@PathVariable int personId){
+		int id = this.homeService.deletePerson(personId);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setLocation(linkTo(HomeController.class).slash(id).toUri());
+		return new ResponseEntity<Void>(httpHeaders, HttpStatus.NO_CONTENT);
+	}
+	
 	public  MultiValueMap<String, String> getHeaders(){
 		 MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		 map.add("Hello", "sheetal");
+		 map.add("Hello", "sheetal-Kutte");
 		 return map;
+	}
+	
+	@ExceptionHandler(org.spring.rest.exception.NotFoundException.class)
+	public ResponseEntity<String> resourceNotFoundExceptionHandler(Exception e){
+		return new ResponseEntity<String>(e.getMessage(),getHeaders(), HttpStatus.NOT_FOUND);
+	}
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<String> genericExceptionHandler(Exception e){
+		return new ResponseEntity<String>(e.getMessage(),getHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.rest.dao.HomeDAO;
+import org.spring.rest.exception.NotFoundException;
 import org.spring.rest.model.Person;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class HomeServiceImpl implements HomeService {
 	
 	@Override
 	@Transactional
-	public Person getPersonById(int id) {
+	public Person getPersonById(int id) throws NotFoundException {
 		logger.debug(" --- ID Is -- {}", id);
 		return this.homeDAO.getPersonById(id);
 	}
@@ -39,6 +40,19 @@ public class HomeServiceImpl implements HomeService {
 		logger.debug(" ====  Input Is =====   {}", person.toString() );
 		
 		return this.homeDAO.addPerson(person);
+	}
+
+	@Override
+	@Transactional
+	public int deletePerson(int id) {
+		logger.debug(" -------- Inside Delete . ID  {}",id);
+		
+		return this.homeDAO.deletePerson(id);
+	}
+
+	@Override
+	public int updatePerson(Person person) {
+		return this.homeDAO.updatePerson(person);
 	}
 
 }
