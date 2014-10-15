@@ -2,7 +2,11 @@ package org.spring.rest;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -14,6 +18,8 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spring.rest.exception.ExceptionData;
+import org.spring.rest.exception.ExceptionDetails;
 import org.spring.rest.model.Person;
 import org.spring.rest.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +109,16 @@ public class HomeController {
 		return new ResponseEntity<String>(e.getMessage(),getHeaders(), HttpStatus.NOT_FOUND);
 	}
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> genericExceptionHandler(Exception e){
-		return new ResponseEntity<String>(e.getMessage(),getHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+	public ResponseEntity<ExceptionData> genericExceptionHandler(Exception e){
+		List<String> listOfCauses = new ArrayList<String>();
+		listOfCauses.add("DUDE!!!!!! WHY DID YOU DO THAT!");
+		ExceptionDetails exceptionDetails = new ExceptionDetails(HttpStatus.INTERNAL_SERVER_ERROR, "Request Could Not Be Completed", 
+				listOfCauses);
+		Date date= new Date(System.currentTimeMillis());
+		DateFormat df = new SimpleDateFormat("dd:MMM:yy:HH:mm:ss");
+		String dt = null;
+		dt  = df.format(date);
+		ExceptionData exceptionData = new ExceptionData(exceptionDetails, dt);
+		return new ResponseEntity<ExceptionData>(exceptionData,getHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
